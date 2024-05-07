@@ -18,18 +18,18 @@ public class PhoneNumberFormatter {
     }
 
     private static String replacePhoneNumbers(String content) {
-
+        // Regex to find Russian phone numbers with spaces or dashes and convert them to US format
         Pattern pattern = Pattern.compile("\\+7\\s*(-?\\s*\\d\\s*){10}");
         Matcher matcher = pattern.matcher(content);
         StringBuilder sb = new StringBuilder();
 
         while (matcher.find()) {
-            String digits = matcher.group().replaceAll("[^\\d]", "");
-            if (digits.length() == 11) {
+            String digits = matcher.group().replaceAll("[^\\d]", ""); // Remove all non-digit characters
+            if (digits.length() == 11) { // Ensure it has exactly 11 digits (including country code '7')
                 String formattedNumber = "+1 (" + digits.substring(1, 4) + ") " +
                         digits.substring(4, 7) + "-" +
                         digits.substring(7, 9) + "-" +
-                        digits.substring(9, 11);
+                        digits.substring(9, 11) + " "; // Add a space after the formatted number
                 matcher.appendReplacement(sb, formattedNumber);
             }
         }
