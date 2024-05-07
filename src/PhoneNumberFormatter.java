@@ -18,18 +18,26 @@ public class PhoneNumberFormatter {
     }
 
     private static String replacePhoneNumbers(String content) {
-        // Regex để tìm số điện thoại Nga, bạn có thể điều chỉnh cho phù hợp
+        // Regex to find Russian phone numbers
         Pattern pattern = Pattern.compile("\\+7(\\d{10})");
         Matcher matcher = pattern.matcher(content);
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder(); // Use StringBuilder for better performance in single-threaded context
+
+        boolean found = false;
         while (matcher.find()) {
-            String newFormat = "+1 (" + matcher.group(1).substring(0, 3) + ") " +
+            found = true;
+            // Format the found number to US phone number format
+            String formattedNumber = "+1 (" + matcher.group(1).substring(0, 3) + ") " +
                     matcher.group(1).substring(3, 6) + "-" +
                     matcher.group(1).substring(6, 8) + "-" +
                     matcher.group(1).substring(8, 10);
-            matcher.appendReplacement(sb, newFormat);
+            matcher.appendReplacement(sb, formattedNumber);
         }
         matcher.appendTail(sb);
+
+        if (!found) {
+            System.out.println("No valid phone numbers found to replace.");
+        }
         return sb.toString();
     }
 }
